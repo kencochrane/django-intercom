@@ -97,9 +97,11 @@ def find_package_data(
                 out.setdefault(package, []).append(prefix + name)
     return out
 
+README = read('README.rst')
+
 setup(
     name='django-intercom',
-    version='0.0.4',
+    version='0.0.5',
     description='Django App for integrating with intercom.io',
     maintainer='Ken Cochrane',
     maintainer_email='KenCochrane@gmail.com',
@@ -112,10 +114,10 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Utilities'
     ],
-    package_data = find_package_data(),
+    package_data = find_package_data('intercom', only_in_packages=False),
     packages=find_packages(),
-    long_description = read('README.rst'),
+    long_description = README,
     setup_requires = [
-        'versiontools >= 1.8.2',
+            'versiontools >= 1.8.2',
     ],
 )
