@@ -1,44 +1,19 @@
-===============
-django-intercom
-===============
+Usage
+=====
 
-django-intercom makes it easy to use http://intercom.io in your django application. You just need to do the following.
+Add the template tag code into your base template before the body tag.
 
-Installation
-============
-1. Install django-intercom using easy_setup or pip::
-
-    pip install django-intercom
-
-
-2. add intercom to your INSTALLED_APPS in your django settings file::
-
-    INSTALLED_APPS = (
-        # all
-        # other 
-        # apps
-        'intercom',
-    )
-
-3. Add "INTERCOM_APPID" setting to your django settings file with your intercom application Id.
-
-    in settings.py::
-
-        INTERCOM_APPID = "your appID"
-
-4. Add the template tag code into your base template before the body tag.
-
-    At the top of the page put this::
+At the top of the page put this::
 
     {% load intercom %}
 
-    At the bottom of the page before the </body> tag put this::
+At the bottom of the page before the </body> tag put this::
 
     {% intercom_tag %}
 
 
-Enable Secure Mode (Optional)
-=============================
+Enable Secure Mode
+==================
 This is optional, if it isn't set, then you will not use secure mode.
 
 If you want to turn on secure mode, you can add INTERCOM_SECURE_KEY to your settings.py with the private key you can get from your intercom->app->security page. 
@@ -55,13 +30,13 @@ Intercom Inbox
 ==============
 Intercom has the ability to add an inbox link to your app so that people can contact you, and for you to let them know when they have a message waiting. If you would like to use these features you need to do the following.
 
-1. Add the intercom css id to any inline element containing text, for example.
+1. Add the intercom css id to any inline element containing text, for example::
     
     <a id="Intercom" href="#">Support</a>
     
 2. Add the appropriate CSS to your style sheet.
 
-No Icon::
+**No Icon**::
     
     #Intercom {
       display: inline-block;
@@ -69,7 +44,7 @@ No Icon::
       padding: 0;
     }
     
-White Envelope (white text on black background)::
+**White Envelope (white text on black background)**::
 
     #Intercom {
       display: inline-block;
@@ -78,7 +53,7 @@ White Envelope (white text on black background)::
       background: transparent url(https://www.intercom.io/images/white_env.png) no-repeat left center;
     }
     
-Black Envelope (black text on white/grey background)::
+**Black Envelope (black text on white/grey background)**::
 
     #Intercom {
       display: inline-block;
@@ -87,7 +62,7 @@ Black Envelope (black text on white/grey background)::
       background: transparent url(https://www.intercom.io/images/black_env.png) no-repeat left center;
     }
     
-If you want to show the unread message count then also add the following::
+**If you want to show the unread message count then also add the following**::
 
     #Intercom em {
       display: inline-block;
@@ -97,8 +72,8 @@ If you want to show the unread message count then also add the following::
     
 3. Configure your settings. Add the following to your django settings if you would like to change the defaults.
 
-INTERCOM_ENABLE_INBOX
----------------------
+**INTERCOM_ENABLE_INBOX**
+
 Default: True
 
 In settings.py::
@@ -106,8 +81,8 @@ In settings.py::
     INTERCOM_ENABLE_INBOX = True
 
 
-INTERCOM_ENABLE_INBOX_COUNTER
------------------------------
+**INTERCOM_ENABLE_INBOX_COUNTER**
+
 Default: True
 
 In settings.py::
@@ -115,8 +90,8 @@ In settings.py::
     INTERCOM_ENABLE_INBOX_COUNTER = True
 
 
-INTERCOM_INBOX_CSS_SELECTOR
----------------------------
+**INTERCOM_INBOX_CSS_SELECTOR**
+
 Default: '#Intercom'
 
 In settings.py::
@@ -147,8 +122,8 @@ Intercom.io allows you to send them your own custom data, django-intercom makes 
 
 Once you have your classes built, you will need to register them with django-intercom so that it knows where to find them. You do this by adding the class to the INTERCOM_CUSTOM_DATA_CLASSES setting. It is important to note that if you have the same dict key returned in more then one Custom Data Class the last class that is run (lower in the list) will overwrite the previous ones.
 
-INTERCOM_CUSTOM_DATA_CLASSES
-----------------------------
+**INTERCOM_CUSTOM_DATA_CLASSES**
+
 Default = None
 
 in settings.py::

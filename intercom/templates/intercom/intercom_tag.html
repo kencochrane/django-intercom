@@ -5,6 +5,15 @@
         email: '{{email_address}}',
         name: '{{name}}',
         {% if user_hash %}user_hash: '{{user_hash}}',{% endif %}
+        {% if enable_inbox %}
+        widget: {
+            activator: '{{css_selector}}',
+            use_counter: {{use_counter}},
+            activator_html: function ( obj ) {
+              return obj.activator_html_functions.brackets();
+            }
+          },{% endif %}
+        custom_data: {{ custom_data|safe }},
         created_at: {{user_created|date:"U"}}
       };
       (function() {
