@@ -4,6 +4,10 @@ django-intercom
 
 django-intercom makes it easy to use http://intercom.io in your django application. You just need to do the following.
 
+Documentation
+=============
+Documentation is also available online at http://django-intercom.readthedocs.org
+
 Installation
 ============
 1. Install django-intercom using easy_setup or pip::
