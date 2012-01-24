@@ -2,7 +2,7 @@
 django-intercom
 ===============
 
-django-intercom makes it easy to user intercom.io in your django application. You just need to do the following.
+django-intercom makes it easy to use http://intercom.io in your django application. You just need to do the following.
 
 Installation
 ============
