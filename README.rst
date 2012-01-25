@@ -59,7 +59,7 @@ Intercom Inbox
 ==============
 Intercom has the ability to add an inbox link to your app so that people can contact you, and for you to let them know when they have a message waiting. If you would like to use these features you need to do the following.
 
-1. Add the intercom css id to any inline element containing text, for example.
+1. Add the intercom css id to any inline element containing text, for example::
     
     <a id="Intercom" href="#">Support</a>
     
