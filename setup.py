@@ -119,7 +119,7 @@ setup(
     package_data = find_package_data(PACKAGE, only_in_packages=False),
     packages=find_packages(),
     long_description = README,
-    setup_requires = [
+    install_requires = [
             'versiontools >= 1.8.2',
     ],
 )
