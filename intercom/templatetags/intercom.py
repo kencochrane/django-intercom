@@ -36,6 +36,11 @@ def intercom_tag(context):
         little cleaner then doing everything in the template.
     """
 
+    # Ensure that the context contains a value for the request key before
+    # continuing.
+    if not context.has_key('request'):
+        return {"INTERCOM_IS_VALID" : False}
+
     request = context['request']
 
     if INTERCOM_APPID is None:
