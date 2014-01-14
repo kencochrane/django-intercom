@@ -48,6 +48,7 @@ def intercom_tag(context):
 
     # make sure INTERCOM_APPID is setup correct and user is authenticated
     if INTERCOM_APPID and request.user and request.user.is_authenticated():
+        user_id = request.user.id
         email = request.user.email
         user_created = request.user.date_joined
         if getattr(request.user, "username"):
@@ -76,13 +77,14 @@ def intercom_tag(context):
         # this is optional, if they don't have the setting set, it won't use.
         if INTERCOM_SECURE_KEY is not None:
             m = hashlib.sha1()
-            user_hash_key = "%s%s" % (INTERCOM_SECURE_KEY, email)
+            user_hash_key = "%s%s" % (INTERCOM_SECURE_KEY, user_id)
             m.update(user_hash_key)
             user_hash = m.hexdigest()
 
         return {"INTERCOM_IS_VALID" : True,
                 "intercom_appid":INTERCOM_APPID,
                 "email_address": email,
+                "user_id": user_id,
                 "user_created": user_created,
                 "name": name,
                 "enable_inbox": INTERCOM_ENABLE_INBOX,
