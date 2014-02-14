@@ -1,8 +1,8 @@
 import logging
 import hashlib
-import json
 from django.template import Library, Node
 from django.conf import settings
+from django.utils import simplejson
 from django.utils.importlib import import_module
 
 register = Library()
@@ -72,7 +72,7 @@ def intercom_tag(context):
                 except ImportError, e:
                     log.warning("%s couldn't be imported, there was an error during import. skipping. %s" % (custom_data_class,e) )
 
-            custom_data = json.dumps(custom_data)
+            custom_data = simplejson.dumps(custom_data)
 
         # this is optional, if they don't have the setting set, it won't use.
         if INTERCOM_SECURE_KEY is not None:
