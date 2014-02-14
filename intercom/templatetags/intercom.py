@@ -51,9 +51,9 @@ def intercom_tag(context):
         user_id = request.user.id
         email = request.user.email
         user_created = request.user.date_joined
-        try:
-            name = request.user.userername
-        except:
+        if getattr(request.user, "username"):
+            name = request.user.username
+        else:
             name = request.user.get_username()
         user_hash = None
         use_counter = 'true' if INTERCOM_ENABLE_INBOX_COUNTER else 'false'
