@@ -15,6 +15,7 @@
             }
           },{% endif %}
         custom_data: {{ custom_data|safe }},
+        company: {{ company_data|safe }},
         created_at: {{user_created|date:"U"}}
       };
       (function() {

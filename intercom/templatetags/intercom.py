@@ -14,6 +14,7 @@ INTERCOM_ENABLE_INBOX = getattr(settings, 'INTERCOM_ENABLE_INBOX', True)
 INTERCOM_ENABLE_INBOX_COUNTER = getattr(settings, 'INTERCOM_ENABLE_INBOX_COUNTER', True)
 INTERCOM_INBOX_CSS_SELECTOR = getattr(settings, 'INTERCOM_INBOX_CSS_SELECTOR', '#Intercom')
 INTERCOM_CUSTOM_DATA_CLASSES = getattr(settings, 'INTERCOM_CUSTOM_DATA_CLASSES', None)
+INTERCOM_COMPANY_DATA_CLASS = getattr(settings, 'INTERCOM_COMPANY_DATA_CLASS', None)
 
 def my_import(name):
     """ dynamic importing """
@@ -74,6 +75,24 @@ def intercom_tag(context):
 
             custom_data = json.dumps(custom_data)
 
+        company_data = {}
+        if INTERCOM_COMPANY_DATA_CLASS:
+            try:
+                cd_class = my_import(INTERCOM_COMPANY_DATA_CLASS)
+                # make sure the class has a company_data method
+                if cd_class and hasattr(cd_class, 'company_data'):
+                    data = cd_class.company_data(request.user)
+                    if all (k in data for k in ('id', 'name', 'created_at')):
+                        company_data.update(data)
+                    else:
+                        log.warning("company method of %s doesn't return all of the required dictionary keys (id, name, created_at), skipping." % INTERCOM_COMPANY_DATA_CLASS)
+                else:
+                    log.warning("%s doesn't have a company_data method, skipping." % INTERCOM_COMPANY_DATA_CLASS)
+            except ImportError, e:
+                log.warning("%s couldn't be imported, there was an error during import. skipping. %s" % (INTERCOM_COMPANY_DATA_CLASS, e) )
+
+            company_data = json.dumps(company_data)
+
         # this is optional, if they don't have the setting set, it won't use.
         if INTERCOM_SECURE_KEY is not None:
             m = hashlib.sha1()
@@ -91,6 +110,7 @@ def intercom_tag(context):
                 "use_counter": use_counter,
                 "css_selector" : INTERCOM_INBOX_CSS_SELECTOR,
                 "custom_data": custom_data,
+                "company_data": company_data,
                 "user_hash" : user_hash}
 
     # if it is here, it isn't a valid setup, return False to not show the tag.

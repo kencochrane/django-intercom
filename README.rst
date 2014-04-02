@@ -160,3 +160,36 @@ in settings.py::
     INTERCOM_CUSTOM_DATA_CLASSES = [
         'thepostman.utils.custom_data.IntercomCustomData',
     ]
+
+
+Company Data
+============
+Intercom.io allows you to group your users by company, django-intercom makes this easy. All you need to do is create a Class with a company_data method that accepts a Django user model as an argument and returns a dictionary containing the keys id, name and created_at, and whatever other information you want to store about the company. Note that the created_at key must contain a Unix timestamp. Here is an example::
+
+    from django.utils.dateformat import DateFormat
+
+    class IntercomCompanyData:
+        """ Company data class located anywhere in your project
+            This one is located in thepostman/utils/company_data.py """
+
+        def company_data(self, user):
+            """ Required method, same name and only accepts one attribute (django User model) """
+
+            organisation = user.organisation
+
+            return {
+                'id' : organisation.id,
+                'name' : organisation.name,
+                'created_at' : DateFormat(organisation.created_at).U(),
+                'price_plan' : organisation.price_plan,
+            }
+
+You will need to register your class with django-intercom so that it knows where to find it. You do this by adding the class to the INTERCOM_COMPANY_DATA_CLASS setting.
+
+INTERCOM_COMPANY_DATA_CLASS
+---------------------------
+Default = None
+
+in settings.py::
+
+    INTERCOM_COMPANY_DATA_CLASS = 'thepostman.utils.company_data.IntercomCompanyData'
