@@ -127,7 +127,42 @@ In settings.py::
 
     INTERCOM_INBOX_CSS_SELECTOR = '#Intercom'
     
-    
+
+User Data
+=========
+By default, django-intercom will send the following user information to intercom.io:
+
+1. user_id (sourced from request.user.id)
+2. email (sourced from request.user.email)
+3. name (sourced from request.user.username or, and as a fallback, request.user.get_username())
+4. created_at (sourced from request.user.date_joined)
+5. user_hash (calculated using INTERCOM_SECURE_KEY and user_id, if INTERCOM_SECURE_KEY is set)
+
+You can override any or all of fields 1-4 by creating a Class with a user_data method that accepts a Django User model as an argument. The method should return a dictionary containing any or all of the keys **user_id**, **email**, **name** and **user_created**, and the desired values for each. Note that the user_created key must contain a datetime. Here is an example::
+
+    from django.utils.dateformat import DateFormat
+
+    class IntercomUserData:
+        """ User data class located anywhere in your project
+            This one is located in thepostman/utils/user_data.py """
+
+        def user_data(self, user):
+            """ Required method, same name and only accepts one attribute (django User model) """
+
+            return {
+                'name' : user.userprofile.name,
+            }
+
+You will need to register your class with django-intercom so that it knows where to find it. You do this by adding the class to the INTERCOM_USER_DATA_CLASS setting.
+
+INTERCOM_USER_DATA_CLASS
+---------------------------
+Default = None
+
+in settings.py::
+
+    INTERCOM_USER_DATA_CLASS = 'thepostman.utils.user_data.IntercomUserData'
+
 Custom Data
 ===========
 Intercom.io allows you to send them your own custom data, django-intercom makes this easy. All you need to do it create a Class with a custom_data method that accepts a Django User model as an argument and returns a dictionary. Here is an example::

@@ -13,6 +13,7 @@ INTERCOM_SECURE_KEY = getattr(settings, 'INTERCOM_SECURE_KEY', None)
 INTERCOM_ENABLE_INBOX = getattr(settings, 'INTERCOM_ENABLE_INBOX', True)
 INTERCOM_ENABLE_INBOX_COUNTER = getattr(settings, 'INTERCOM_ENABLE_INBOX_COUNTER', True)
 INTERCOM_INBOX_CSS_SELECTOR = getattr(settings, 'INTERCOM_INBOX_CSS_SELECTOR', '#Intercom')
+INTERCOM_USER_DATA_CLASS = getattr(settings, 'INTERCOM_USER_DATA_CLASS', None)
 INTERCOM_CUSTOM_DATA_CLASSES = getattr(settings, 'INTERCOM_CUSTOM_DATA_CLASSES', None)
 INTERCOM_COMPANY_DATA_CLASS = getattr(settings, 'INTERCOM_COMPANY_DATA_CLASS', None)
 
@@ -49,13 +50,23 @@ def intercom_tag(context):
 
     # make sure INTERCOM_APPID is setup correct and user is authenticated
     if INTERCOM_APPID and request.user and request.user.is_authenticated():
-        user_id = request.user.id
-        email = request.user.email
-        user_created = request.user.date_joined
+        user_data = {}
+        if INTERCOM_USER_DATA_CLASS:
+            try:
+                ud_class = my_import(INTERCOM_USER_DATA_CLASS)
+                # make sure the class has a user_data method
+                if ud_class and hasattr(ud_class, 'user_data'):
+                    user_data = ud_class.user_data(request.user)
+            except ImportError, e:
+                log.warning("%s couldn't be imported, there was an error during import. skipping. %s" % (INTERCOM_USER_DATA_CLASS, e) )
+
+        user_id = user_data.get('user_id', request.user.id)
+        email = user_data.get('email', request.user.email)
+        user_created = user_data.get('user_created', request.user.date_joined)
         try:
-            name = request.user.username
+            name = user_data.get('name', request.user.username)
         except:
-            name = request.user.get_username()
+            name = user_data.get('name', request.user.get_username())
         user_hash = None
         use_counter = 'true' if INTERCOM_ENABLE_INBOX_COUNTER else 'false'
 
