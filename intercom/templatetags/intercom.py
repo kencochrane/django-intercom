@@ -40,7 +40,7 @@ def intercom_tag(context):
     """
 
     # Short-circuit if the tag is disabled.
-    if INTERCOM_DISABLED:
+    if INTERCOM_DISABLED is True:
         return {"INTERCOM_IS_VALID" : False}
 
     # Ensure that the context contains a value for the request key before
