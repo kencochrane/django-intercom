@@ -55,6 +55,20 @@ You will need to look in the code samples to find the security key.
 
 You will also need to make sure you check the "Enable secure mode" check box on the security page before this will work correctly.
 
+Disable Tag (Optional)
+======================
+This is optional, if it isn't set to True, then the tag will be active.
+
+If you want to disable the tag, you can add INTERCOM_DISABLED to your settings.py.
+
+in settings.py::
+
+    INTERCOM_DISABLED = True
+
+This is useful when you do not want to send user information to intercom.io on every request in some enviroment for a period of time, e.g. in a development enviroment.
+
+This provides a quick way to disable the tag without having to remove/comment out the tag in templates or the INTERCOM_APPID in settings.py (the latter would disable the sending of information but result in a setup warning in the log).
+
 Intercom Inbox
 ==============
 Intercom has the ability to add an inbox link to your app so that people can contact you, and for you to let them know when they have a message waiting. If you would like to use these features you need to do the following.

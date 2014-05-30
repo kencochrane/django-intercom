@@ -16,6 +16,7 @@ INTERCOM_INBOX_CSS_SELECTOR = getattr(settings, 'INTERCOM_INBOX_CSS_SELECTOR', '
 INTERCOM_USER_DATA_CLASS = getattr(settings, 'INTERCOM_USER_DATA_CLASS', None)
 INTERCOM_CUSTOM_DATA_CLASSES = getattr(settings, 'INTERCOM_CUSTOM_DATA_CLASSES', None)
 INTERCOM_COMPANY_DATA_CLASS = getattr(settings, 'INTERCOM_COMPANY_DATA_CLASS', None)
+INTERCOM_DISABLED = getattr(settings, 'INTERCOM_DISABLED', False)
 
 def my_import(name):
     """ dynamic importing """
@@ -37,6 +38,10 @@ def intercom_tag(context):
         You could do this without using a template tag, but I felt this was a
         little cleaner then doing everything in the template.
     """
+
+    # Short-circuit if the tag is disabled.
+    if INTERCOM_DISABLED is True:
+        return {"INTERCOM_IS_VALID" : False}
 
     # Ensure that the context contains a value for the request key before
     # continuing.
