@@ -112,22 +112,22 @@ def intercom_tag(context):
 
         # this is optional, if they don't have the setting set, it won't use.
         if INTERCOM_SECURE_KEY is not None:
-            return hmac.new(INTERCOM_SECURE_KEY, str(user_id),
-                            digestmod=hashlib.sha256).hexdigest()
+            user_hash = hmac.new(INTERCOM_SECURE_KEY, str(user_id),
+                                 digestmod=hashlib.sha256).hexdigest()
 
-        return {"INTERCOM_IS_VALID" : True,
-                "intercom_appid":INTERCOM_APPID,
+        return {"INTERCOM_IS_VALID": True,
+                "intercom_appid": INTERCOM_APPID,
                 "email_address": email,
                 "user_id": user_id,
                 "user_created": user_created,
                 "name": name,
                 "enable_inbox": INTERCOM_ENABLE_INBOX,
                 "use_counter": use_counter,
-                "css_selector" : INTERCOM_INBOX_CSS_SELECTOR,
+                "css_selector": INTERCOM_INBOX_CSS_SELECTOR,
                 "custom_data": custom_data,
                 "company_data": company_data,
-                "user_hash" : user_hash}
+                "user_hash": user_hash}
 
     # if it is here, it isn't a valid setup, return False to not show the tag.
-    return {"INTERCOM_IS_VALID" : False}
+    return {"INTERCOM_IS_VALID": False}
 
