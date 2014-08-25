@@ -1,5 +1,6 @@
 import logging
 import hashlib
+import hmac
 import json
 from django.template import Library, Node
 from django.conf import settings
@@ -31,10 +32,10 @@ def intercom_tag(context):
         correctly in the django settings and also check if the user is logged
         in, if so then it will pass the data along to the intercom_tag template
         to be displayed.
-        
-        If something isn't perfect we will return False, which will then not 
+
+        If something isn't perfect we will return False, which will then not
         install the javascript since it isn't needed.
-        
+
         You could do this without using a template tag, but I felt this was a
         little cleaner then doing everything in the template.
     """
@@ -111,24 +112,22 @@ def intercom_tag(context):
 
         # this is optional, if they don't have the setting set, it won't use.
         if INTERCOM_SECURE_KEY is not None:
-            m = hashlib.sha1()
-            user_hash_key = "%s%s" % (INTERCOM_SECURE_KEY, user_id)
-            m.update(user_hash_key)
-            user_hash = m.hexdigest()
+            user_hash = hmac.new(INTERCOM_SECURE_KEY, str(user_id),
+                                 digestmod=hashlib.sha256).hexdigest()
 
-        return {"INTERCOM_IS_VALID" : True,
-                "intercom_appid":INTERCOM_APPID,
+        return {"INTERCOM_IS_VALID": True,
+                "intercom_appid": INTERCOM_APPID,
                 "email_address": email,
                 "user_id": user_id,
                 "user_created": user_created,
                 "name": name,
                 "enable_inbox": INTERCOM_ENABLE_INBOX,
                 "use_counter": use_counter,
-                "css_selector" : INTERCOM_INBOX_CSS_SELECTOR,
+                "css_selector": INTERCOM_INBOX_CSS_SELECTOR,
                 "custom_data": custom_data,
                 "company_data": company_data,
-                "user_hash" : user_hash}
+                "user_hash": user_hash}
 
     # if it is here, it isn't a valid setup, return False to not show the tag.
-    return {"INTERCOM_IS_VALID" : False}
-    
+    return {"INTERCOM_IS_VALID": False}
+
