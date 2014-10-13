@@ -18,6 +18,7 @@ INTERCOM_USER_DATA_CLASS = getattr(settings, 'INTERCOM_USER_DATA_CLASS', None)
 INTERCOM_CUSTOM_DATA_CLASSES = getattr(settings, 'INTERCOM_CUSTOM_DATA_CLASSES', None)
 INTERCOM_COMPANY_DATA_CLASS = getattr(settings, 'INTERCOM_COMPANY_DATA_CLASS', None)
 INTERCOM_DISABLED = getattr(settings, 'INTERCOM_DISABLED', False)
+INTERCOM_INCLUDE_USERID = getattr(settings, 'INTERCOM_INCLUDE_USERID', True)
 
 def my_import(name):
     """ dynamic importing """
@@ -66,7 +67,10 @@ def intercom_tag(context):
             except ImportError, e:
                 log.warning("%s couldn't be imported, there was an error during import. skipping. %s" % (INTERCOM_USER_DATA_CLASS, e) )
 
-        user_id = user_data.get('user_id', request.user.id)
+        if INTERCOM_INCLUDE_USERID:
+            user_id = user_data.get('user_id', request.user.id)
+        else:
+            user_id = None
         email = user_data.get('email', request.user.email)
         user_created = user_data.get('user_created', request.user.date_joined)
         try:
@@ -112,7 +116,8 @@ def intercom_tag(context):
 
         # this is optional, if they don't have the setting set, it won't use.
         if INTERCOM_SECURE_KEY is not None:
-            user_hash = hmac.new(INTERCOM_SECURE_KEY, str(user_id),
+            hmac_value = str(user_id) if user_id else str(email)
+            user_hash = hmac.new(INTERCOM_SECURE_KEY, hmac_value,
                                  digestmod=hashlib.sha256).hexdigest()
 
         return {"INTERCOM_IS_VALID": True,
