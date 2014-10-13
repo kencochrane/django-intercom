@@ -3,3 +3,6 @@
 _templates
 _static
 _build
+*.egg-info
+*.egg
+*.swp
