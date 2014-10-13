@@ -25,6 +25,20 @@ example::
         INTERCOM_SECURE_KEY = "your security_code"
 
 
+INTERCOM_INCLUDE_USERID
+-----------------------
+**Optional**
+
+Whether to include the ``user_id`` in the intercom settings. Turn this off if
+you want to use the email as the key to identify a user.
+
+Default: True
+
+example::
+
+        INTERCOM_INCLUDE_USERID = False
+
+
 INTERCOM_ENABLE_INBOX
 ---------------------
 **Optional**
