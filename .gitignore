@@ -7,3 +7,4 @@ _build
 *.egg
 *.eggs
 *.swp
+dist/
