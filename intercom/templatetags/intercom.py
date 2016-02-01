@@ -1,10 +1,12 @@
+# -*- coding: utf-8 -*-
+from __future__ import print_function, division, absolute_import, unicode_literals
+
 import logging
 import hashlib
 import hmac
 import json
-from django.template import Library, Node
+from django.template import Library
 from django.conf import settings
-from django.utils.importlib import import_module
 
 register = Library()
 log = logging.getLogger(__name__)
@@ -20,12 +22,14 @@ INTERCOM_COMPANY_DATA_CLASS = getattr(settings, 'INTERCOM_COMPANY_DATA_CLASS', N
 INTERCOM_DISABLED = getattr(settings, 'INTERCOM_DISABLED', False)
 INTERCOM_INCLUDE_USERID = getattr(settings, 'INTERCOM_INCLUDE_USERID', True)
 
+
 def my_import(name):
     """ dynamic importing """
     module, attr = name.rsplit('.', 1)
     mod = __import__(module, fromlist=[attr])
     klass = getattr(mod, attr)
     return klass()
+
 
 @register.inclusion_tag('intercom/intercom_tag.html', takes_context=True)
 def intercom_tag(context):
@@ -43,12 +47,12 @@ def intercom_tag(context):
 
     # Short-circuit if the tag is disabled.
     if INTERCOM_DISABLED is True:
-        return {"INTERCOM_IS_VALID" : False}
+        return {"INTERCOM_IS_VALID": False}
 
     # Ensure that the context contains a value for the request key before
     # continuing.
-    if not context.has_key('request'):
-        return {"INTERCOM_IS_VALID" : False}
+    if 'request' not in context:
+        return {"INTERCOM_IS_VALID": False}
 
     request = context['request']
 
@@ -64,8 +68,9 @@ def intercom_tag(context):
                 # make sure the class has a user_data method
                 if ud_class and hasattr(ud_class, 'user_data'):
                     user_data = ud_class.user_data(request.user)
-            except ImportError, e:
-                log.warning("%s couldn't be imported, there was an error during import. skipping. %s" % (INTERCOM_USER_DATA_CLASS, e) )
+            except ImportError as e:
+                log.warning("%s couldn't be imported, there was an error during import. "
+                            "skipping. %s", INTERCOM_USER_DATA_CLASS, e)
 
         if INTERCOM_INCLUDE_USERID:
             user_id = user_data.get('user_id', request.user.id)
@@ -90,9 +95,11 @@ def intercom_tag(context):
                         # call custom_data method and update the custom_data dict
                         custom_data.update(cd_class.custom_data(request.user))
                     else:
-                        log.warning("%s doesn't have a custom_data method, skipping." % custom_data_class)
-                except ImportError, e:
-                    log.warning("%s couldn't be imported, there was an error during import. skipping. %s" % (custom_data_class,e) )
+                        log.warning("%s doesn't have a custom_data method, skipping.",
+                                    custom_data_class)
+                except ImportError as e:
+                    log.warning("%s couldn't be imported, there was an error during import. "
+                                "skipping. %s", custom_data_class, e)
 
             custom_data = json.dumps(custom_data)
 
@@ -103,21 +110,26 @@ def intercom_tag(context):
                 # make sure the class has a company_data method
                 if cd_class and hasattr(cd_class, 'company_data'):
                     data = cd_class.company_data(request.user)
-                    if all (k in data for k in ('id', 'name', 'created_at')):
+                    if all(k in data for k in ('id', 'name', 'created_at')):
                         company_data.update(data)
                     else:
-                        log.warning("company method of %s doesn't return all of the required dictionary keys (id, name, created_at), skipping." % INTERCOM_COMPANY_DATA_CLASS)
+                        log.warning("company method of %s doesn't return all of the required "
+                                    "dictionary keys (id, name, created_at), skipping.",
+                                    INTERCOM_COMPANY_DATA_CLASS)
                 else:
-                    log.warning("%s doesn't have a company_data method, skipping." % INTERCOM_COMPANY_DATA_CLASS)
-            except ImportError, e:
-                log.warning("%s couldn't be imported, there was an error during import. skipping. %s" % (INTERCOM_COMPANY_DATA_CLASS, e) )
+                    log.warning("%s doesn't have a company_data method, skipping.",
+                                INTERCOM_COMPANY_DATA_CLASS)
+            except ImportError as e:
+                log.warning("%s couldn't be imported, there was an error during import. "
+                            "skipping. %s", INTERCOM_COMPANY_DATA_CLASS, e)
 
             company_data = json.dumps(company_data)
 
         # this is optional, if they don't have the setting set, it won't use.
         if INTERCOM_SECURE_KEY is not None:
-            hmac_value = str(user_id) if user_id else str(email)
-            user_hash = hmac.new(INTERCOM_SECURE_KEY, hmac_value,
+            hmac_value = user_id if user_id else email
+            user_hash = hmac.new(INTERCOM_SECURE_KEY.encode('utf8'),
+                                 hmac_value.encode('utf8'),
                                  digestmod=hashlib.sha256).hexdigest()
 
         return {"INTERCOM_IS_VALID": True,
@@ -135,4 +147,3 @@ def intercom_tag(context):
 
     # if it is here, it isn't a valid setup, return False to not show the tag.
     return {"INTERCOM_IS_VALID": False}
-

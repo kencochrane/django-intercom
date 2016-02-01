@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import print_function, division, absolute_import, unicode_literals
 #
 # django-intercom documentation build configuration file, created by
 # sphinx-quickstart on Mon Jan 23 13:50:08 2012.
@@ -11,7 +12,8 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys, os
+import sys
+import os
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -44,8 +46,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'django-intercom'
-copyright = u'2012, Ken Cochrane'
+project = 'django-intercom'
+copyright = '2012, Ken Cochrane'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -188,8 +190,8 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'django-intercom.tex', u'django-intercom Documentation',
-   u'Ken Cochrane', 'manual'),
+  ('index', 'django-intercom.tex', 'django-intercom Documentation',
+   'Ken Cochrane', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -218,8 +220,8 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'django-intercom', u'django-intercom Documentation',
-     [u'Ken Cochrane'], 1)
+    ('index', 'django-intercom', 'django-intercom Documentation',
+     ['Ken Cochrane'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -232,8 +234,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'django-intercom', u'django-intercom Documentation',
-   u'Ken Cochrane', 'django-intercom', 'One line description of project.',
+  ('index', 'django-intercom', 'django-intercom Documentation',
+   'Ken Cochrane', 'django-intercom', 'One line description of project.',
    'Miscellaneous'),
 ]
 
@@ -250,10 +252,10 @@ texinfo_documents = [
 # -- Options for Epub output ---------------------------------------------------
 
 # Bibliographic Dublin Core info.
-epub_title = u'django-intercom'
-epub_author = u'Ken Cochrane'
-epub_publisher = u'Ken Cochrane'
-epub_copyright = u'2012, Ken Cochrane'
+epub_title = 'django-intercom'
+epub_author = 'Ken Cochrane'
+epub_publisher = 'Ken Cochrane'
+epub_copyright = '2012, Ken Cochrane'
 
 # The language of the text. It defaults to the language option
 # or en if the language is not set.
