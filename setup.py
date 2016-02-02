@@ -50,6 +50,11 @@ setup(
     url='https://github.com/kencochrane/django-intercom/',
     classifiers=[
         'Programming Language :: Python',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
         'Framework :: Django',
         'Intended Audience :: Developers',
         'Operating System :: OS Independent',
