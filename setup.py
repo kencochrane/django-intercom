@@ -10,7 +10,7 @@ except ImportError:
 
 
 def read(fname):
-    return codecs.open(os.path.join(os.path.dirname(__file__), fname)).read()
+    return codecs.open(os.path.join(os.path.dirname(__file__), fname), 'rb', 'utf-8').read()
 
 
 def get_packages(package):
