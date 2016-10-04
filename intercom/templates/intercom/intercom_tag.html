@@ -1,18 +1,18 @@
 {% if INTERCOM_IS_VALID %}
     <script>
     var intercomSettings = {
-        app_id: '{{intercom_appid}}',
-        email: '{{email_address}}',
-        {% if user_id %}user_id: '{{user_id}}',{% endif %}
+        'app_id': '{{intercom_appid}}',
+        'email': '{{email_address}}',
+        {% if user_id %}'user_id': '{{user_id}}',{% endif %}
         name: '{{name}}',
-        {% if user_hash %}user_hash: '{{user_hash}}',{% endif %}
+        {% if user_hash %}'user_hash': '{{user_hash}}',{% endif %}
         {% if custom_data %}
         {% for key, value in custom_data.items %}
-        {{ key|safe }}: '{{ value|safe }}',
+        '{{ key|safe }}': '{{ value|safe }}',
         {% endfor %}
         {% endif %}
-        company: {{ company_data|safe }},
-        created_at: {{user_created|date:"U"}}
+        'company': {{ company_data|safe }},
+        'created_at': {{user_created|date:"U"}}
       };
       (function() {
         function async_load() {
