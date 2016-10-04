@@ -6,7 +6,11 @@
         {% if user_id %}user_id: '{{user_id}}',{% endif %}
         name: '{{name}}',
         {% if user_hash %}user_hash: '{{user_hash}}',{% endif %}
-        custom_data: {{ custom_data|safe }},
+        {% if custom_data %}
+        {% for key, value in custom_data.items %}
+        {{ key|safe }}: {{ value|safe }},
+        {% endfor %}
+        {% endif %}
         company: {{ company_data|safe }},
         created_at: {{user_created|date:"U"}}
       };
