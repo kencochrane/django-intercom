@@ -8,7 +8,7 @@
         {% if user_hash %}user_hash: '{{user_hash}}',{% endif %}
         {% if custom_data %}
         {% for key, value in custom_data.items %}
-        {{ key|safe }}: {{ value|safe }},
+        {{ key|safe }}: '{{ value|safe }}',
         {% endfor %}
         {% endif %}
         company: {{ company_data|safe }},
