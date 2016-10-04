@@ -4,7 +4,7 @@
         'app_id': '{{intercom_appid}}',
         'email': '{{email_address}}',
         {% if user_id %}'user_id': '{{user_id}}',{% endif %}
-        name: '{{name}}',
+        'name': '{{name}}',
         {% if user_hash %}'user_hash': '{{user_hash}}',{% endif %}
         {% if custom_data %}
         {% for key, value in custom_data.items %}
