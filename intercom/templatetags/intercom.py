@@ -101,7 +101,7 @@ def intercom_tag(context):
                     log.warning("%s couldn't be imported, there was an error during import. "
                                 "skipping. %s", custom_data_class, e)
 
-            custom_data = json.dumps(custom_data)
+            custom_data = custom_data
 
         company_data = {}
         if INTERCOM_COMPANY_DATA_CLASS:
@@ -109,7 +109,7 @@ def intercom_tag(context):
                 cd_class = my_import(INTERCOM_COMPANY_DATA_CLASS)
                 # make sure the class has a company_data method
                 if cd_class and hasattr(cd_class, 'company_data'):
-                    data = cd_class.company_data(request.user)
+                    data = cd_class.company_data(request.user, request.session)
                     if all(k in data for k in ('id', 'name', 'created_at')):
                         company_data.update(data)
                     else:
