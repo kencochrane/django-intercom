@@ -39,7 +39,7 @@ def get_package_data(package):
 
 README = read('README.rst')
 PACKAGE = "intercom"
-VERSION = "0.1.2"
+VERSION = "0.1.3"
 
 setup(
     name='django-intercom',
