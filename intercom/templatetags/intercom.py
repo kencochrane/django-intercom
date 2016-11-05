@@ -101,8 +101,6 @@ def intercom_tag(context):
                     log.warning("%s couldn't be imported, there was an error during import. "
                                 "skipping. %s", custom_data_class, e)
 
-            custom_data = custom_data
-
         company_data = {}
         if INTERCOM_COMPANY_DATA_CLASS:
             try:
