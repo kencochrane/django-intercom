@@ -59,8 +59,13 @@ def intercom_tag(context):
     if INTERCOM_APPID is None:
         log.warning("INTERCOM_APPID isn't setup correctly in your settings")
 
-    # make sure INTERCOM_APPID is setup correct and user is authenticated
-    if INTERCOM_APPID and request.user and request.user.is_authenticated():
+    # Make sure INTERCOM_APPID is setup correctly
+    if not INTERCOM_APPID:
+        # If it is here, it isn't a valid setup, return False to not show the tag.
+        return {"INTERCOM_IS_VALID": False}
+
+    # If the user is defined, use the full configuration
+    if request.user and request.user.is_authenticated():
         user_data = {}
         if INTERCOM_USER_DATA_CLASS:
             try:
@@ -131,6 +136,7 @@ def intercom_tag(context):
                                  digestmod=hashlib.sha256).hexdigest()
 
         return {"INTERCOM_IS_VALID": True,
+                "anonymous": False,
                 "intercom_appid": INTERCOM_APPID,
                 "email_address": email,
                 "user_id": user_id,
@@ -143,5 +149,8 @@ def intercom_tag(context):
                 "company_data": company_data,
                 "user_hash": user_hash}
 
-    # if it is here, it isn't a valid setup, return False to not show the tag.
-    return {"INTERCOM_IS_VALID": False}
+    else:
+        return {"INTERCOM_IS_VALID": True,
+                "intercom_appid": INTERCOM_APPID,
+                "anonymous": True}
+
