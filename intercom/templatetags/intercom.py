@@ -162,5 +162,12 @@ def intercom_tag(context):
                              "company_data": company_data,
                              "user_hash": user_hash})
 
+    else:
+        # unauthenticated
+        DEFAULT_USER.update({"INTERCOM_IS_VALID": True,
+                             "intercom_appid": INTERCOM_APPID,
+                             "user_id": request.session.session_key,
+                             "name": 'Unknown'})
+        request
     # if it is here, it isn't a valid setup, return False to not show the tag.
     return DEFAULT_USER
