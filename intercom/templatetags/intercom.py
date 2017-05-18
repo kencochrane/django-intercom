@@ -22,6 +22,7 @@ INTERCOM_CUSTOM_DATA_CLASSES = getattr(settings, 'INTERCOM_CUSTOM_DATA_CLASSES',
 INTERCOM_COMPANY_DATA_CLASS = getattr(settings, 'INTERCOM_COMPANY_DATA_CLASS', None)
 INTERCOM_DISABLED = getattr(settings, 'INTERCOM_DISABLED', False)
 INTERCOM_INCLUDE_USERID = getattr(settings, 'INTERCOM_INCLUDE_USERID', True)
+INTERCOM_UNAUTHENTICATED_USER_EMAIL = getattr(settings, 'INTERCOM_UNAUTHENTICATED_USER_EMAIL', 'lead@example.com')
 
 
 DEFAULT_USER = {
@@ -167,6 +168,7 @@ def intercom_tag(context):
         DEFAULT_USER.update({"INTERCOM_IS_VALID": True,
                              "intercom_appid": INTERCOM_APPID,
                              "user_id": request.session.session_key,
+                             "email_address": INTERCOM_UNAUTHENTICATED_USER_EMAIL,
                              "name": 'Unknown'})
         request
     # if it is here, it isn't a valid setup, return False to not show the tag.
