@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, division, absolute_import, unicode_literals
 
+import datetime
 import logging
 import hashlib
 import hmac
@@ -21,6 +22,23 @@ INTERCOM_CUSTOM_DATA_CLASSES = getattr(settings, 'INTERCOM_CUSTOM_DATA_CLASSES',
 INTERCOM_COMPANY_DATA_CLASS = getattr(settings, 'INTERCOM_COMPANY_DATA_CLASS', None)
 INTERCOM_DISABLED = getattr(settings, 'INTERCOM_DISABLED', False)
 INTERCOM_INCLUDE_USERID = getattr(settings, 'INTERCOM_INCLUDE_USERID', True)
+INTERCOM_UNAUTHENTICATED_USER_EMAIL = getattr(settings, 'INTERCOM_UNAUTHENTICATED_USER_EMAIL', 'lead@example.com')
+
+
+DEFAULT_USER = {
+    "INTERCOM_IS_VALID": True,
+    "intercom_appid": INTERCOM_APPID,
+    "email_address": None,
+    "user_id": None,
+    "user_created": datetime.datetime.utcnow(),
+    "name": None,
+    "enable_inbox": INTERCOM_ENABLE_INBOX,
+    "use_counter": 'false',
+    "css_selector": INTERCOM_INBOX_CSS_SELECTOR,
+    "custom_data": {},
+    "company_data": {},
+    "user_hash": None,
+}
 
 
 def my_import(name):
@@ -59,13 +77,8 @@ def intercom_tag(context):
     if INTERCOM_APPID is None:
         log.warning("INTERCOM_APPID isn't setup correctly in your settings")
 
-    # Make sure INTERCOM_APPID is setup correctly
-    if not INTERCOM_APPID:
-        # If it is here, it isn't a valid setup, return False to not show the tag.
-        return {"INTERCOM_IS_VALID": False}
-
-    # If the user is defined, use the full configuration
-    if request.user and request.user.is_authenticated():
+    # make sure INTERCOM_APPID is setup correct and user is authenticated
+    if INTERCOM_APPID and request.user and request.user.is_authenticated():
         user_data = {}
         if INTERCOM_USER_DATA_CLASS:
             try:
@@ -106,6 +119,8 @@ def intercom_tag(context):
                     log.warning("%s couldn't be imported, there was an error during import. "
                                 "skipping. %s", custom_data_class, e)
 
+            custom_data = json.dumps(custom_data)
+
         company_data = {}
         if INTERCOM_COMPANY_DATA_CLASS:
             try:
@@ -130,27 +145,31 @@ def intercom_tag(context):
 
         # this is optional, if they don't have the setting set, it won't use.
         if INTERCOM_SECURE_KEY is not None:
-            hmac_value = str(user_id) if user_id else email
+            hmac_value = user_id if user_id else email
             user_hash = hmac.new(INTERCOM_SECURE_KEY.encode('utf8'),
                                  hmac_value.encode('utf8'),
                                  digestmod=hashlib.sha256).hexdigest()
 
-        return {"INTERCOM_IS_VALID": True,
-                "anonymous": False,
-                "intercom_appid": INTERCOM_APPID,
-                "email_address": email,
-                "user_id": user_id,
-                "user_created": user_created,
-                "name": name,
-                "enable_inbox": INTERCOM_ENABLE_INBOX,
-                "use_counter": use_counter,
-                "css_selector": INTERCOM_INBOX_CSS_SELECTOR,
-                "custom_data": custom_data,
-                "company_data": company_data,
-                "user_hash": user_hash}
+        DEFAULT_USER.update({"INTERCOM_IS_VALID": True,
+                             "intercom_appid": INTERCOM_APPID,
+                             "email_address": email,
+                             "user_id": user_id,
+                             "user_created": user_created,
+                             "name": name,
+                             "enable_inbox": INTERCOM_ENABLE_INBOX,
+                             "use_counter": use_counter,
+                             "css_selector": INTERCOM_INBOX_CSS_SELECTOR,
+                             "custom_data": custom_data,
+                             "company_data": company_data,
+                             "user_hash": user_hash})
 
     else:
-        return {"INTERCOM_IS_VALID": True,
-                "intercom_appid": INTERCOM_APPID,
-                "anonymous": True}
-
+        # unauthenticated
+        DEFAULT_USER.update({"INTERCOM_IS_VALID": True,
+                             "intercom_appid": INTERCOM_APPID,
+                             "user_id": request.session.session_key,
+                             "email_address": INTERCOM_UNAUTHENTICATED_USER_EMAIL,
+                             "name": 'Unknown'})
+        request
+    # if it is here, it isn't a valid setup, return False to not show the tag.
+    return DEFAULT_USER
