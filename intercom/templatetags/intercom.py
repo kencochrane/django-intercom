@@ -145,7 +145,7 @@ def intercom_tag(context):
 
         # this is optional, if they don't have the setting set, it won't use.
         if INTERCOM_SECURE_KEY is not None:
-            hmac_value = user_id if user_id else email
+            hmac_value = str(user_id) if user_id else email
             user_hash = hmac.new(INTERCOM_SECURE_KEY.encode('utf8'),
                                  hmac_value.encode('utf8'),
                                  digestmod=hashlib.sha256).hexdigest()
