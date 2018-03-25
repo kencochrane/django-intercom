@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from __future__ import print_function, division, absolute_import, unicode_literals
+from __future__ import (print_function, division, absolute_import,
+                        unicode_literals)
 
 import datetime
 import logging
@@ -82,8 +83,9 @@ def intercom_tag(context):
                 if ud_class and hasattr(ud_class, 'user_data'):
                     user_data = ud_class.user_data(request.user)
             except ImportError as e:
-                log.warning("%s couldn't be imported, there was an error during import. "
-                            "skipping. %s", INTERCOM_USER_DATA_CLASS, e)
+                log.warning(
+                    "%s couldn't be imported, there was an error during"
+                    " import. skipping. %s", INTERCOM_USER_DATA_CLASS, e)
 
         if INTERCOM_INCLUDE_USERID:
             user_id = user_data.get('user_id', request.user.id)
@@ -126,11 +128,13 @@ def intercom_tag(context):
 
     else:
         # unauthenticated
-        DEFAULT_USER.update({"INTERCOM_IS_VALID": True,
-                             "intercom_appid": INTERCOM_APPID,
-                             "user_id": request.session.session_key,
-                             "email_address": INTERCOM_UNAUTHENTICATED_USER_EMAIL,
-                             "name": 'Unknown'})
+        DEFAULT_USER.update(
+            {"INTERCOM_IS_VALID": True,
+             "intercom_appid": INTERCOM_APPID,
+             "user_id": request.session.session_key,
+             "email_address": INTERCOM_UNAUTHENTICATED_USER_EMAIL,
+             "name": 'Unknown'}
+        )
         request
     # if it is here, it isn't a valid setup, return False to not show the tag.
     return DEFAULT_USER
