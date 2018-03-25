@@ -7,23 +7,19 @@ import hashlib
 import hmac
 import json
 from django.template import Library
-from django.conf import settings
+
+from intercom.settings import (INTERCOM_APPID, INTERCOM_ENABLE_INBOX,
+                               INTERCOM_INBOX_CSS_SELECTOR, INTERCOM_DISABLED,
+                               INTERCOM_USER_DATA_CLASS,
+                               INTERCOM_INCLUDE_USERID,
+                               INTERCOM_ENABLE_INBOX_COUNTER,
+                               INTERCOM_CUSTOM_DATA_CLASSES,
+                               INTERCOM_COMPANY_DATA_CLASS,
+                               INTERCOM_SECURE_KEY,
+                               INTERCOM_UNAUTHENTICATED_USER_EMAIL)
 
 register = Library()
 log = logging.getLogger(__name__)
-
-INTERCOM_APPID = getattr(settings, 'INTERCOM_APPID', None)
-INTERCOM_SECURE_KEY = getattr(settings, 'INTERCOM_SECURE_KEY', None)
-INTERCOM_ENABLE_INBOX = getattr(settings, 'INTERCOM_ENABLE_INBOX', True)
-INTERCOM_ENABLE_INBOX_COUNTER = getattr(settings, 'INTERCOM_ENABLE_INBOX_COUNTER', True)
-INTERCOM_INBOX_CSS_SELECTOR = getattr(settings, 'INTERCOM_INBOX_CSS_SELECTOR', '#Intercom')
-INTERCOM_USER_DATA_CLASS = getattr(settings, 'INTERCOM_USER_DATA_CLASS', None)
-INTERCOM_CUSTOM_DATA_CLASSES = getattr(settings, 'INTERCOM_CUSTOM_DATA_CLASSES', None)
-INTERCOM_COMPANY_DATA_CLASS = getattr(settings, 'INTERCOM_COMPANY_DATA_CLASS', None)
-INTERCOM_DISABLED = getattr(settings, 'INTERCOM_DISABLED', False)
-INTERCOM_INCLUDE_USERID = getattr(settings, 'INTERCOM_INCLUDE_USERID', True)
-INTERCOM_UNAUTHENTICATED_USER_EMAIL = getattr(settings, 'INTERCOM_UNAUTHENTICATED_USER_EMAIL', 'lead@example.com')
-
 
 DEFAULT_USER = {
     "INTERCOM_IS_VALID": True,
@@ -62,7 +58,6 @@ def intercom_tag(context):
         You could do this without using a template tag, but I felt this was a
         little cleaner then doing everything in the template.
     """
-
     # Short-circuit if the tag is disabled.
     if INTERCOM_DISABLED is True:
         return {"INTERCOM_IS_VALID": False}
@@ -103,45 +98,11 @@ def intercom_tag(context):
         user_hash = None
         use_counter = 'true' if INTERCOM_ENABLE_INBOX_COUNTER else 'false'
 
-        custom_data = {}
-        if INTERCOM_CUSTOM_DATA_CLASSES:
-            for custom_data_class in INTERCOM_CUSTOM_DATA_CLASSES:
-                try:
-                    cd_class = my_import(custom_data_class)
-                    # check make sure the class has a custom_data method.
-                    if cd_class and hasattr(cd_class, 'custom_data'):
-                        # call custom_data method and update the custom_data dict
-                        custom_data.update(cd_class.custom_data(request.user))
-                    else:
-                        log.warning("%s doesn't have a custom_data method, skipping.",
-                                    custom_data_class)
-                except ImportError as e:
-                    log.warning("%s couldn't be imported, there was an error during import. "
-                                "skipping. %s", custom_data_class, e)
+        if INTERCOM_CUSTOM_DATA_CLASSES is not None:
+            custom_data = get_custom_data(request.user)
 
-            custom_data = json.dumps(custom_data)
-
-        company_data = {}
-        if INTERCOM_COMPANY_DATA_CLASS:
-            try:
-                cd_class = my_import(INTERCOM_COMPANY_DATA_CLASS)
-                # make sure the class has a company_data method
-                if cd_class and hasattr(cd_class, 'company_data'):
-                    data = cd_class.company_data(request.user)
-                    if all(k in data for k in ('id', 'name', 'created_at')):
-                        company_data.update(data)
-                    else:
-                        log.warning("company method of %s doesn't return all of the required "
-                                    "dictionary keys (id, name, created_at), skipping.",
-                                    INTERCOM_COMPANY_DATA_CLASS)
-                else:
-                    log.warning("%s doesn't have a company_data method, skipping.",
-                                INTERCOM_COMPANY_DATA_CLASS)
-            except ImportError as e:
-                log.warning("%s couldn't be imported, there was an error during import. "
-                            "skipping. %s", INTERCOM_COMPANY_DATA_CLASS, e)
-
-            company_data = json.dumps(company_data)
+        if INTERCOM_COMPANY_DATA_CLASS is not None:
+            company_data = get_company_data(request.user)
 
         # this is optional, if they don't have the setting set, it won't use.
         if INTERCOM_SECURE_KEY is not None:
@@ -173,3 +134,69 @@ def intercom_tag(context):
         request
     # if it is here, it isn't a valid setup, return False to not show the tag.
     return DEFAULT_USER
+
+
+def get_custom_data(user):
+    """
+    Get the user custom data from the custom cdata class
+    Args:
+        user: The Django user
+
+    Returns:
+        custom_data(json): the custom data loaded from the class if exists,
+        otherwise it is empty
+    """
+    custom_data = {}
+    if INTERCOM_CUSTOM_DATA_CLASSES is None:
+        return json.dumps(custom_data)
+    for custom_data_class in INTERCOM_CUSTOM_DATA_CLASSES:
+        try:
+            cd_class = my_import(custom_data_class)
+            # check make sure the class has a custom_data method.
+            if cd_class and hasattr(cd_class, 'custom_data'):
+                # call custom_data method and update the custom_data dict
+                custom_data.update(cd_class.custom_data(user))
+            else:
+                log.warning("%s doesn't have a custom_data qmethod, skipping.",
+                            custom_data_class)
+        except ImportError as e:
+            log.warning(
+                "%s couldn't be imported, there was an error during import. "
+                "skipping. %s", custom_data_class, e)
+        finally:
+            return json.dumps(custom_data)
+
+
+def get_company_data(user):
+    """
+    Get the company custom data from the custom company class
+    Args:
+        user: The Django user
+
+    Returns:
+        company_data(json): the company data loaded from the class if exists,
+        otherwise it is empty
+    """
+    company_data = {}
+    try:
+        cd_class = my_import(INTERCOM_COMPANY_DATA_CLASS)
+        # make sure the class has a company_data method
+        if cd_class and hasattr(cd_class, 'company_data'):
+            data = cd_class.company_data(user)
+            if all(k in data for k in ('id', 'name', 'created_at')):
+                company_data.update(data)
+            else:
+                log.warning(
+                    "company method of %s doesn't return all of the required "
+                    "dictionary keys (id, name, created_at), skipping.",
+                    INTERCOM_COMPANY_DATA_CLASS)
+        else:
+            log.warning("%s doesn't have a company_data method, skipping.",
+                        INTERCOM_COMPANY_DATA_CLASS)
+    except ImportError as e:
+        log.warning(
+            "%s couldn't be imported, there was an error during import. "
+            "skipping. %s", INTERCOM_COMPANY_DATA_CLASS, e)
+
+    finally:
+        return json.dumps(company_data)
