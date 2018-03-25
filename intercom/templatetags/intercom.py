@@ -131,7 +131,6 @@ def intercom_tag(context):
              "email_address": INTERCOM_UNAUTHENTICATED_USER_EMAIL,
              "name": 'Unknown'}
         )
-        request
     # if it is here, it isn't a valid setup, return False to not show the tag.
     return DEFAULT_USER
 
