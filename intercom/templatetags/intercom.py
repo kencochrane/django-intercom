@@ -99,12 +99,8 @@ def intercom_tag(context):
             name = user_data.get('name', request.user.get_username())
         user_hash = None
         use_counter = 'true' if INTERCOM_ENABLE_INBOX_COUNTER else 'false'
-
-        if INTERCOM_CUSTOM_DATA_CLASSES is not None:
-            custom_data = get_custom_data(request.user)
-
-        if INTERCOM_COMPANY_DATA_CLASS is not None:
-            company_data = get_company_data(request.user)
+        custom_data = get_custom_data(request.user)
+        company_data = get_company_data(request.user)
 
         # this is optional, if they don't have the setting set, it won't use.
         if INTERCOM_SECURE_KEY is not None:
@@ -182,6 +178,8 @@ def get_company_data(user):
         otherwise it is empty
     """
     company_data = {}
+    if INTERCOM_COMPANY_DATA_CLASS is None:
+        return json.dumps(company_data)
     try:
         cd_class = my_import(INTERCOM_COMPANY_DATA_CLASS)
         # make sure the class has a company_data method
