@@ -1,36 +1,32 @@
 {% if INTERCOM_IS_VALID %}
     <script>
     var intercomSettings = {
-         'app_id': '{{intercom_appid}}',
+        'app_id': '{{intercom_appid}}',
 
-         {% if not anonymous %}
-            'email': '{{email_address}}',
-            {% if user_id %}'user_id': '{{user_id}}',{% endif %}
-            'name': '{{name}}',
-            {% if user_hash %}'user_hash': '{{user_hash}}',{% endif %}
-            {% if custom_data %}
-              {% for key, value in custom_data.items %}
-                '{{ key|safe }}': '{{ value|safe }}',
-              {% endfor %}
-            {% endif %}
-            'company': {{ company_data|safe }},
-            'created_at': {{user_created|date:"U"}}
-         {% endif %}
-      };
-      (function() {
+        {% if not anonymous %}
+        'email': '{{email_address}}',
+        {% if user_id %}'user_id': '{{user_id}}',{% endif %}
+        'name': '{{name}}',
+        {% if user_hash %}'user_hash': '{{user_hash}}',{% endif %}
+        'custom_data': {{ custom_data|safe }},
+        'company': {{ company_data|safe }},
+        'created_at': {{user_created|date:"U"}}
+        {% endif %}
+    };
+    (function() {
         function async_load() {
-          var s = document.createElement('script');
-          s.type = 'text/javascript'; s.async = true;
-          s.src = 'https://static.intercomcdn.com/intercom.v1.js';
-          var x = document.getElementsByTagName('script')[0];
-          x.parentNode.insertBefore(s, x);
+            var s = document.createElement('script');
+            s.type = 'text/javascript'; s.async = true;
+            s.src = 'https://static.intercomcdn.com/intercom.v1.js';
+            var x = document.getElementsByTagName('script')[0];
+            x.parentNode.insertBefore(s, x);
         }
         if (window.attachEvent) {
-          window.attachEvent('onload', async_load);
+            window.attachEvent('onload', async_load);
         } else {
-          window.addEventListener('load', async_load, false);
+            window.addEventListener('load', async_load, false);
         };
-      })();
+    })();
     </script>
 {% else %}
     <!-- Skipping intercom for this request -->
