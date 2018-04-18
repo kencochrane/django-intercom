@@ -9,15 +9,15 @@ import hmac
 import json
 from django.template import Library
 
-from intercom.settings import (INTERCOM_APPID, INTERCOM_ENABLE_INBOX,
-                               INTERCOM_INBOX_CSS_SELECTOR, INTERCOM_DISABLED,
-                               INTERCOM_USER_DATA_CLASS,
-                               INTERCOM_INCLUDE_USERID,
-                               INTERCOM_ENABLE_INBOX_COUNTER,
-                               INTERCOM_CUSTOM_DATA_CLASSES,
-                               INTERCOM_COMPANY_DATA_CLASS,
-                               INTERCOM_SECURE_KEY,
-                               INTERCOM_UNAUTHENTICATED_USER_EMAIL)
+from django_intercom.settings import (INTERCOM_APPID, INTERCOM_ENABLE_INBOX,
+                                      INTERCOM_INBOX_CSS_SELECTOR, INTERCOM_DISABLED,
+                                      INTERCOM_USER_DATA_CLASS,
+                                      INTERCOM_INCLUDE_USERID,
+                                      INTERCOM_ENABLE_INBOX_COUNTER,
+                                      INTERCOM_CUSTOM_DATA_CLASSES,
+                                      INTERCOM_COMPANY_DATA_CLASS,
+                                      INTERCOM_SECURE_KEY,
+                                      INTERCOM_UNAUTHENTICATED_USER_EMAIL)
 
 register = Library()
 log = logging.getLogger(__name__)
