@@ -1,4 +1,4 @@
 include AUTHORS
 include README.rst
 include LICENSE
-recursive-include intercom/templates/intercom *.html
+recursive-include django_intercom/templates/intercom *.html

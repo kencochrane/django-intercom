@@ -38,8 +38,9 @@ def get_package_data(package):
     return {package: filepaths}
 
 README = read('README.rst')
-PACKAGE = "intercom"
+PACKAGE = "django_intercom"
 VERSION = "0.0.14"
+
 
 setup(
     name='django-intercom',
@@ -61,8 +62,8 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Utilities'
     ],
-    package_data=get_package_data('intercom'),
-    packages=get_packages('intercom'),
+    package_data=get_package_data('django_intercom'),
+    packages=get_packages('django_intercom'),
     long_description=README,
     setup_requires=[
         'versiontools >= 1.8.2',
