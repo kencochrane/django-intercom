@@ -5,11 +5,11 @@ from django.contrib.auth.models import User, AnonymousUser
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.test import TestCase, RequestFactory
 
-from intercom.templatetags.intercom import (intercom_tag,
-                                            get_company_data,
-                                            get_custom_data)
+from django_intercom.templatetags.intercom import (intercom_tag,
+                                                   get_company_data,
+                                                   get_custom_data)
 
-MODULE_PATCH = 'intercom.templatetags.intercom.{}'
+MODULE_PATCH = 'django_intercom.templatetags.intercom.{}'
 
 
 class CustomDataDummy:
