@@ -6,6 +6,20 @@ django-intercom makes it easy to use http://intercom.io in your django applicati
 
 Supported Python versions: 2.7 and 3.3+
 
+Releases
+========
+
+- 0.1.0 : 06-30-2018
+  - rename package to avoid conflict with python-intercom_tag
+  - refactor custom_data and company_data parts
+  - refactor is_authenticated
+  - fix PEP8 issues
+  - add ability to use intercom with anonymous users
+- 0.0.13 : 2-16-2016
+  - fixed setup.py problems with python 3
+- 0.0.12 : 2-1-2016
+  - added python3 support
+
 Documentation
 =============
 Documentation is also available online at http://django-intercom.readthedocs.org
@@ -21,7 +35,7 @@ Installation
 
     INSTALLED_APPS = (
         # all
-        # other 
+        # other
         # apps
         'django_intercom',
     )
@@ -47,7 +61,7 @@ Enable Secure Mode (Optional)
 =============================
 This is optional, if it isn't set, then you will not use secure mode.
 
-If you want to turn on secure mode, you can add INTERCOM_SECURE_KEY to your settings.py with the private key you can get from your intercom->app->security page. 
+If you want to turn on secure mode, you can add INTERCOM_SECURE_KEY to your settings.py with the private key you can get from your intercom->app->security page.
 
 in settings.py::
 
@@ -76,19 +90,19 @@ Intercom Inbox
 Intercom has the ability to add an inbox link to your app so that people can contact you, and for you to let them know when they have a message waiting. If you would like to use these features you need to do the following.
 
 1. Add the intercom css id to any inline element containing text, for example::
-    
+
     <a id="Intercom" href="#">Support</a>
-    
+
 2. Add the appropriate CSS to your style sheet.
 
 No Icon::
-    
+
     #Intercom {
       display: inline-block;
       text-decoration: underline;
       padding: 0;
     }
-    
+
 White Envelope (white text on black background)::
 
     #Intercom {
@@ -97,7 +111,7 @@ White Envelope (white text on black background)::
       padding: 0 0 0 24px;
       background: transparent url(https://www.intercom.io/images/white_env.png) no-repeat left center;
     }
-    
+
 Black Envelope (black text on white/grey background)::
 
     #Intercom {
@@ -106,7 +120,7 @@ Black Envelope (black text on white/grey background)::
       padding: 0 0 0 24px;
       background: transparent url(https://www.intercom.io/images/black_env.png) no-repeat left center;
     }
-    
+
 If you want to show the unread message count then also add the following::
 
     #Intercom em {
@@ -114,7 +128,7 @@ If you want to show the unread message count then also add the following::
       font-style: normal;
       text-decoration: underline;
     }
-    
+
 3. Configure your settings. Add the following to your django settings if you would like to change the defaults.
 
 INTERCOM_ENABLE_INBOX
@@ -142,7 +156,7 @@ Default: '#Intercom'
 In settings.py::
 
     INTERCOM_INBOX_CSS_SELECTOR = '#Intercom'
-    
+
 
 User Data
 =========
@@ -184,17 +198,17 @@ Custom Data
 Intercom.io allows you to send them your own custom data, django-intercom makes this easy. All you need to do it create a Class with a custom_data method that accepts a Django User model as an argument and returns a dictionary. Here is an example::
 
     from thepostman.models import message
-    
+
     class IntercomCustomData:
-        """ Custom data class located anywhere in your project 
+        """ Custom data class located anywhere in your project
             This one is located in thepostman/utils/custom_data.py """
-        
+
         def custom_data(self, user):
             """ Required method, same name and only accepts one attribute (django User model) """
-            
+
             num_messages = message.objects.filter(user=user).count()
             num_unread = messages.objects.filter(user=user, read=False).count()
-            
+
             return {
                 'num_messages' : num_messages,
                 'num_unread' : num_unread,
