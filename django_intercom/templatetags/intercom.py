@@ -74,7 +74,7 @@ def intercom_tag(context):
         log.warning("INTERCOM_APPID isn't setup correctly in your settings")
 
     # make sure INTERCOM_APPID is setup correct and user is authenticated
-    if INTERCOM_APPID and request.user and request.user.is_authenticated:
+    if INTERCOM_APPID and request.user and request.user.is_authenticated():
         user_data = {}
         if INTERCOM_USER_DATA_CLASS:
             try:
