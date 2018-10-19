@@ -39,7 +39,7 @@ def get_package_data(package):
 
 README = read('README.rst')
 PACKAGE = "django_intercom"
-VERSION = "0.1.1"
+VERSION = "0.1.2"
 
 
 setup(
@@ -56,6 +56,8 @@ setup(
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Framework :: Django',
         'Intended Audience :: Developers',
         'Operating System :: OS Independent',
