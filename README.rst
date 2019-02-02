@@ -35,7 +35,7 @@ Installation
     pip install django-intercom
 
 
-2. add intercom to your INSTALLED_APPS in your django settings file::
+2. Add intercom to your ``INSTALLED_APPS`` in your django settings file::
 
     INSTALLED_APPS = (
         # all
@@ -44,7 +44,7 @@ Installation
         'django_intercom',
     )
 
-3. Add "INTERCOM_APPID" setting to your django settings file with your intercom application Id.
+3. Add ``INTERCOM_APPID`` setting to your django settings file with your intercom application Id.
 
     in settings.py::
 
