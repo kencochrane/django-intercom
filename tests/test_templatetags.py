@@ -81,7 +81,7 @@ class TestIntercomTemplateTag(TestCase):
                     'intercom_appid': '1234abCD',
                     'email_address': 'lead@example.com',
                     'name': 'Unknown', 'enable_inbox': True,
-                    'use_counter': 'true', 'css_selector': '#Intercom',
+                    'use_counter': 'false', 'css_selector': '#Intercom',
                     'custom_data': '{}', 'company_data': '{}',
                     'user_hash': None}
         with patch(MODULE_PATCH.format('INTERCOM_APPID'), '1234abCD'):
@@ -90,6 +90,8 @@ class TestIntercomTemplateTag(TestCase):
             tag_dict = intercom_tag(self.context)
             # Remove user_id
             del tag_dict['user_id']
+            # Remove user_created
+            del tag_dict['user_created']
             self.assertDictEqual(tag_dict, expected)
 
     def test_get_custom_data_default_is_empty_JSON(self):

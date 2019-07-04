@@ -10,7 +10,8 @@ import json
 from django.template import Library
 
 from django_intercom.settings import (INTERCOM_APPID, INTERCOM_ENABLE_INBOX,
-                                      INTERCOM_INBOX_CSS_SELECTOR, INTERCOM_DISABLED,
+                                      INTERCOM_INBOX_CSS_SELECTOR,
+                                      INTERCOM_DISABLED,
                                       INTERCOM_USER_DATA_CLASS,
                                       INTERCOM_INCLUDE_USERID,
                                       INTERCOM_ENABLE_INBOX_COUNTER,
@@ -21,21 +22,6 @@ from django_intercom.settings import (INTERCOM_APPID, INTERCOM_ENABLE_INBOX,
 
 register = Library()
 log = logging.getLogger(__name__)
-
-DEFAULT_USER = {
-    "INTERCOM_IS_VALID": True,
-    "intercom_appid": INTERCOM_APPID,
-    "email_address": None,
-    "user_id": None,
-    "user_created": datetime.datetime.utcnow(),
-    "name": None,
-    "enable_inbox": INTERCOM_ENABLE_INBOX,
-    "use_counter": 'false',
-    "css_selector": INTERCOM_INBOX_CSS_SELECTOR,
-    "custom_data": {},
-    "company_data": {},
-    "user_hash": None,
-}
 
 
 def my_import(name):
@@ -67,6 +53,21 @@ def intercom_tag(context):
     # continuing.
     if 'request' not in context:
         return {"INTERCOM_IS_VALID": False}
+
+    default_user = {
+        "INTERCOM_IS_VALID": True,
+        "intercom_appid": INTERCOM_APPID,
+        "email_address": None,
+        "user_id": None,
+        "user_created": datetime.datetime.utcnow(),
+        "name": None,
+        "enable_inbox": INTERCOM_ENABLE_INBOX,
+        "use_counter": 'false',
+        "css_selector": INTERCOM_INBOX_CSS_SELECTOR,
+        "custom_data": '{}',
+        "company_data": '{}',
+        "user_hash": None,
+    }
 
     request = context['request']
 
@@ -109,7 +110,8 @@ def intercom_tag(context):
                                  hmac_value.encode('utf8'),
                                  digestmod=hashlib.sha256).hexdigest()
 
-        DEFAULT_USER.update({"INTERCOM_IS_VALID": True,
+        default_user.update({"INTERCOM_IS_VALID": True,
+                             "anonymous": False,
                              "intercom_appid": INTERCOM_APPID,
                              "email_address": email,
                              "user_id": user_id,
@@ -124,15 +126,16 @@ def intercom_tag(context):
 
     else:
         # unauthenticated
-        DEFAULT_USER.update(
+        default_user.update(
             {"INTERCOM_IS_VALID": True,
+             "anonymous": True,
              "intercom_appid": INTERCOM_APPID,
              "user_id": request.session.session_key,
              "email_address": INTERCOM_UNAUTHENTICATED_USER_EMAIL,
              "name": 'Unknown'}
         )
     # if it is here, it isn't a valid setup, return False to not show the tag.
-    return DEFAULT_USER
+    return default_user
 
 
 def get_custom_data(user):
