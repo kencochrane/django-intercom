@@ -56,6 +56,7 @@ def intercom_tag(context):
 
     default_user = {
         "INTERCOM_IS_VALID": True,
+        "anonymous": None,
         "intercom_appid": INTERCOM_APPID,
         "email_address": None,
         "user_id": None,
