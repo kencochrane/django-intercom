@@ -1,3 +1,8 @@
 People who have worked on this project
 --------------------------------------
 - Ken Cochrane (@KenCochrane)
+- Lee Longmore (@leelongmore)
+- Neal Todd (@nealtodd)
+- Danilo Bargen (@dbrgn)
+- Eduardo Raad (@eraad)
+- Manuel Kaufmann (@humitos)

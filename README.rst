@@ -8,6 +8,10 @@ Supported Python versions: 2.7 and 3.3+
 
 Releases
 ========
+- 0.1.3 : 07-09-2019
+  - Fixed anonymous error where it wasn't getting set correctly  [@humitos]
+  - bump django to 2.0.13
+  - changed default_user so it wasn't global [@humitos]
 - 0.1.2 : 10-19-2018
   - #35 fix(error): TypeError: 'bool' object is not callable [@AnArchkoleptik]
   - bump django dev requirement to 2.0.9
